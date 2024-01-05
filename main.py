@@ -79,7 +79,6 @@ if __name__ == "__main__":
     run_async(fetch_and_save_users())
     run_async(fetch_and_save_posts())
 
-#Function, what retunned the list of all users
 @app.get("/all_users/", response_model=list[User])
 async def all_users():
     with sqlite3.connect('db.sqlite3') as dbu:
