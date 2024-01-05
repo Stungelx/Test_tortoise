@@ -32,9 +32,6 @@ class Users(Model):
     class Meta:
         table = "users"
 
-    def __str__(self):
-        return self.name
-
 class Posts(Model):
     id = fields.IntField(pk=True)
     user_id = fields.IntField(Null=True)
@@ -44,11 +41,8 @@ class Posts(Model):
     class Meta:
         table = "posts"
 
-    def __str__(self):
-        return self.title
-
 async def init():
-    await Tortoise.init(db_url="sqlite://sqlite3.db", modules={"models": ["__main__"]})
+    await Tortoise.init(db_url="sqlite://db.sqlite3", modules={"models": ["__main__"]})
     await Tortoise.generate_schemas()
 
 async def fetch_and_save_users():
@@ -88,7 +82,7 @@ if __name__ == "__main__":
 #Function, what retunned the list of all users
 @app.get("/all_users/", response_model=list[User])
 async def all_users():
-    with sqlite3.connect('sqlite3.db') as dbu:
+    with sqlite3.connect('db.sqlite3') as dbu:
         cursor = dbu.cursor()
         dtb1 = cursor.execute("""SELECT * FROM users""")
         result = dtb1.fetchall()
@@ -96,7 +90,7 @@ async def all_users():
 
 @app.get("/all_posts/", response_model=list[Post])
 async def all_posts():
-    async with sqlite3.connect('sqlite3.db') as dbu:
+     with sqlite3.connect('db.sqlite3') as dbu:
         cursor = dbu.cursor()
         dtb2 = cursor.execute("""SELECT * FROM posts""")
         result = dtb2.fetchall()
@@ -104,7 +98,7 @@ async def all_posts():
 
 @app.get("/user/{user_id}", response_model=list[User])
 async def find_user(user_id: int):
-    with sqlite3.connect('sqlite3.db') as dbu:
+    with sqlite3.connect('db.sqlite3') as dbu:
         cursor = dbu.cursor()
         dtb1 = cursor.execute(f"""SELECT * FROM users WHERE id = {user_id}""")
         result = dtb1.fetchall()
@@ -112,7 +106,7 @@ async def find_user(user_id: int):
 
 @app.get("/post/{user_id}", response_model=list[Post])
 async def find_user_posts(user_id: int):
-    with sqlite3.connect('sqlite3.db') as dbu:
+    with sqlite3.connect('db.sqlite3') as dbu:
         cursor = dbu.cursor()
         dtb1 = cursor.execute(f"""SELECT * FROM posts WHERE user_id = {user_id}""")
         result = dtb1.fetchall()
